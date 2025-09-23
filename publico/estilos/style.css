@@ -29,10 +29,21 @@ h2 {
   --bs-navbar-disabled-color: var(--bs-navbar-color);
   --bs-navbar-brand-color: var(--bs-navbar-color);
   --bs-navbar-active-color: var(--bs-navbar-color);
+  --bs-emphasis-color: #d7f6f7;
+  --bs-navbar-toggler-border-color: #d7f6f796;
   box-shadow: 3px 3px 4px 2px #0a0908;
   color: #f2cc8f !important;
   max-width: 100%;
 }
+.navbar-toggler-icon {
+  background-image: url("../assets/menu.png") !important;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 30px;
+  height: 30px;
+}
+
 .nav-link {
   --bs-navbar-active-color: #d7f6f7;
   text-decoration: underline 0.15em #f2cc8f00;
@@ -64,7 +75,16 @@ h2 {
 }
 #hero-content,
 #hero-menu {
-  padding: 3rem 2.5rem;
+  margin: 0 auto;
+  width: 60%;
+  padding: 3rem 3.5rem;
+  background-position: center center;
+  background-size: cover;
+}
+#tabela {
+  margin: 0 auto;
+  width: 80%;
+  padding: 3rem 3.5rem;
   background-position: center center;
   background-size: cover;
 }
@@ -236,6 +256,15 @@ hr {
   font-weight: bolder;
   color: #d00000;
   font-size: 1.5rem;
+}
+
+.btn-table {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: none;
+  padding: 0;
+  background: none;
 }
 
 /*MEDIAS*/

@@ -14,7 +14,7 @@ app.use(
     resave: true,
     saveUninitialized: true,
     cookie: {
-      maxAge: 1000 * 60 * 15, //15 minutos ocioso até encerrar a sessão
+      maxAge: 1000 * 60 * 60, //15 minutos ocioso até encerrar a sessão
     },
   })
 );

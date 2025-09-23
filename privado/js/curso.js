@@ -1,4 +1,5 @@
 const formulario = document.getElementById("formCliente");
+const divMenu = document.getElementById("hero-menu");
 
 formulario.onsubmit = gravarCurso; //atribuir a função gravar curso ao evento submit do formulário
 document.getElementById("btnAtualizar").onclick = () => {
@@ -7,12 +8,56 @@ document.getElementById("btnAtualizar").onclick = () => {
 };
 const formatarData = (data) => {
   if (!data) return "";
-  return data.split("T")[0];
+  const dataInvertida = data.split("T")[0];
+  const vetor = dataInvertida.split("-");
+  return `${vetor[2]}/${vetor[1]}/${vetor[0]}`;
 };
 document.getElementById("btnReset").onclick = resetFormulário;
-
 carregarDocentes();
 exibirTabelaCursos();
+
+function mensagemAlerta(acao, tipo) {
+  const alert = document.createElement("div");
+  alert.className = `alert alert-${tipo} fade mt-3`;
+  alert.setAttribute("role", "alert");
+  alert.id = "alertaMensagem";
+  alert.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill me-3" viewBox="0 0 16 16">  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/></svg>Curso ${acao} com sucesso!`;
+  divMenu.appendChild(alert);
+  setTimeout(() => {
+    alert.classList.add("show");
+  }, 10);
+  setTimeout(() => {
+    alert.classList.remove("show");
+    setTimeout(() => {
+      if (alert.parentElement) {
+        alert.remove();
+      }
+    }, 3000);
+  }, 4500);
+}
+
+function validarFormulario() {
+  const formValidado = formulario.checkValidity();
+  if (formValidado) {
+    formulario.classList.remove("was-validated");
+  } else {
+    formulario.classList.add("was-validated");
+  }
+
+  return formValidado;
+}
+
+function resetFormulário() {
+  document.getElementById("codigo").value = "";
+  document.getElementById("nomeCurso").value = "";
+  document.getElementById("sigla").value = "";
+  document.getElementById("cargaHoraria").value = "";
+  document.getElementById("valor").value = "";
+  document.getElementById("dataInicio").value = "";
+  document.getElementById("dataFim").value = "";
+  document.getElementById("conteudoProg").value = "";
+  document.getElementById("docente").value = "";
+}
 
 function gravarCurso(evento) {
   if (validarFormulario()) {
@@ -52,8 +97,8 @@ function gravarCurso(evento) {
         if (dados.status) {
           resetFormulário();
           exibirTabelaCursos();
+          mensagemAlerta("gravado", "success");
         }
-        alert(dados.mensagem);
       })
       .catch((erro) => {
         alert("Não foi possível gravar o curso" + erro.message);
@@ -61,17 +106,6 @@ function gravarCurso(evento) {
   }
   evento.stopPropagation();
   evento.preventDefault();
-}
-
-function validarFormulario() {
-  const formValidado = formulario.checkValidity();
-  if (formValidado) {
-    formulario.classList.remove("was-validated");
-  } else {
-    formulario.classList.add("was-validated");
-  }
-
-  return formValidado;
 }
 
 function carregarDocentes() {
@@ -110,8 +144,8 @@ function excluirCurso(id) {
       .then((dados) => {
         if (dados.status) {
           exibirTabelaCursos();
+          mensagemAlerta("excluído", "success");
         }
-        alert(dados.mensagem);
       })
       .catch((erro) => {
         alert("Não foi possível excluir o curso." + erro.message);
@@ -191,24 +225,12 @@ function alterarCurso(id) {
       if (dados.status) {
         resetFormulário();
         exibirTabelaCursos();
+        mensagemAlerta("alterado", "success");
       }
-      alert(dados.mensagem);
     })
     .catch((erro) => {
       alert("Não foi possível gravar o cliente" + erro.message);
     });
-}
-
-function resetFormulário() {
-  document.getElementById("codigo").value = "";
-  document.getElementById("nomeCurso").value = "";
-  document.getElementById("sigla").value = "";
-  document.getElementById("cargaHoraria").value = "";
-  document.getElementById("valor").value = "";
-  document.getElementById("dataInicio").value = "";
-  document.getElementById("dataFim").value = "";
-  document.getElementById("conteudoProg").value = "";
-  document.getElementById("docente").value = "";
 }
 
 function exibirTabelaCursos() {
@@ -253,7 +275,7 @@ function exibirTabelaCursos() {
           <td>${formatarData(curso.data_inicio)}</td>
           <td>${formatarData(curso.data_fim)}</td>
           <td>${curso.cont_prag}</td>
-          <td>${curso.docente.nome}</td>
+          <td>${curso.docente.nome} ${curso.docente.sobrenome}</td>
           <td><div class="d-flex gap-2">
           <button type="button" class="btn btn-danger" onclick="excluirCurso('${
             curso.id

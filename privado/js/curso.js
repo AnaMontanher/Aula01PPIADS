@@ -6,13 +6,19 @@ document.getElementById("btnAtualizar").onclick = () => {
   const id = document.getElementById("codigo").value;
   alterarCurso(id);
 };
+
+const formularioData = (data) => {
+  if (!data) return "";
+  return data.split("T")[0];
+};
+
 const formatarData = (data) => {
   if (!data) return "";
   const dataInvertida = data.split("T")[0];
   const vetor = dataInvertida.split("-");
   return `${vetor[2]}/${vetor[1]}/${vetor[0]}`;
 };
-document.getElementById("btnReset").onclick = resetFormulário;
+document.getElementById("btnReset").onclick = resetFormulario;
 carregarDocentes();
 exibirTabelaCursos();
 
@@ -34,29 +40,6 @@ function mensagemAlerta(acao, tipo) {
       }
     }, 3000);
   }, 4500);
-}
-
-function validarFormulario() {
-  const formValidado = formulario.checkValidity();
-  if (formValidado) {
-    formulario.classList.remove("was-validated");
-  } else {
-    formulario.classList.add("was-validated");
-  }
-
-  return formValidado;
-}
-
-function resetFormulário() {
-  document.getElementById("codigo").value = "";
-  document.getElementById("nomeCurso").value = "";
-  document.getElementById("sigla").value = "";
-  document.getElementById("cargaHoraria").value = "";
-  document.getElementById("valor").value = "";
-  document.getElementById("dataInicio").value = "";
-  document.getElementById("dataFim").value = "";
-  document.getElementById("conteudoProg").value = "";
-  document.getElementById("docente").value = "";
 }
 
 function gravarCurso(evento) {
@@ -95,7 +78,7 @@ function gravarCurso(evento) {
       })
       .then((dados) => {
         if (dados.status) {
-          resetFormulário();
+          resetFormulario();
           exibirTabelaCursos();
           mensagemAlerta("gravado", "success");
         }
@@ -106,6 +89,17 @@ function gravarCurso(evento) {
   }
   evento.stopPropagation();
   evento.preventDefault();
+}
+
+function validarFormulario() {
+  const formValidado = formulario.checkValidity();
+  if (formValidado) {
+    formulario.classList.remove("was-validated");
+  } else {
+    formulario.classList.add("was-validated");
+  }
+
+  return formValidado;
 }
 
 function carregarDocentes() {
@@ -120,7 +114,7 @@ function carregarDocentes() {
         const selectDocente = document.getElementById("docente");
         for (const docente of dados.docentes) {
           const option = document.createElement("option");
-          //option.innerHTML = "<option value = '" + cidade.id"'>" + cidade.nome  + "/"+ cidade.uf + "</option>"
+          //option.innerHTML = "<option value = '" + docente.id"'>" + docente.nome  + "/"+ docente.uf + "</option>"
           //   option.innerHTML = `<option value = "${docente.cpf}">${docente.nome} ${docente.sobrenome}</option> `;
           option.value = docente.CPF;
           option.textContent = docente.nome + " " + docente.sobrenome;
@@ -129,7 +123,9 @@ function carregarDocentes() {
       }
     })
     .catch((erro) => {
-      alert("Não foi possível recuperar as cidades do backend." + erro.message);
+      alert(
+        "Não foi possível recuperar as docentes do backend." + erro.message
+      );
     });
 }
 
@@ -168,10 +164,10 @@ function prepararFormulario(id) {
           document.getElementById("sigla").value = curso.sigla;
           document.getElementById("cargaHoraria").value = curso.carga;
           document.getElementById("valor").value = parseFloat(curso.valor);
-          document.getElementById("dataInicio").value = formatarData(
+          document.getElementById("dataInicio").value = formularioData(
             curso.data_inicio
           );
-          document.getElementById("dataFim").value = formatarData(
+          document.getElementById("dataFim").value = formularioData(
             curso.data_fim
           );
           document.getElementById("conteudoProg").value = curso.cont_prag;
@@ -180,7 +176,7 @@ function prepararFormulario(id) {
           // Após preenchimento, envia alteração direto
           if (confirm(`Deseja alterar o curso (ID: ${curso.id})?`)) {
           } else {
-            resetFormulário;
+            resetFormulario;
           }
         }
       })
@@ -223,7 +219,7 @@ function alterarCurso(id) {
     })
     .then((dados) => {
       if (dados.status) {
-        resetFormulário();
+        resetFormulario();
         exibirTabelaCursos();
         mensagemAlerta("alterado", "success");
       }
@@ -231,6 +227,18 @@ function alterarCurso(id) {
     .catch((erro) => {
       alert("Não foi possível gravar o cliente" + erro.message);
     });
+}
+
+function resetFormulario() {
+  document.getElementById("codigo").value = "";
+  document.getElementById("nomeCurso").value = "";
+  document.getElementById("sigla").value = "";
+  document.getElementById("cargaHoraria").value = "";
+  document.getElementById("valor").value = "";
+  document.getElementById("dataInicio").value = "";
+  document.getElementById("dataFim").value = "";
+  document.getElementById("conteudoProg").value = "";
+  document.getElementById("docente").value = "";
 }
 
 function exibirTabelaCursos() {
